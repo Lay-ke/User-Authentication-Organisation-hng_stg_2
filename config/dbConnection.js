@@ -7,6 +7,8 @@ const {
 POSTGRES_URI
 } = process.env
 
-module.exports.sequelize = new Sequelize(POSTGRES_URI);
+module.exports.sequelize = new Sequelize(POSTGRES_URI, {
+    dialectModule: pg
+  });
 
 
