@@ -19,12 +19,13 @@ app.use(authRoute);
 app.use(userRoute);
 app.use(errorHandler);
 
+app.listen(port, console.log('Listening on port', port));
 sequelize.authenticate()
 .then(() => {
     console.log('Connection has been established successfully.');
-    app.listen(port, console.log('Listening on port', port));
 })
 .catch(err => {console.error('Unable to connect to the database:', err);});
+
 
 
 module.exports = app;
