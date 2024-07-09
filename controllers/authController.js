@@ -33,7 +33,13 @@ module.exports.register = async (req, res) => {
             message: 'Registration successful',
             data: {
                 accessToken: token,
-                user: result
+                user: {
+                    userId: result.userId,
+                    firstName: result.firstName,
+                    lastName: result.lastName,
+                    email: result.email,
+                    phone: result.phone
+                }
             }
         });
     } catch (error) {
@@ -103,7 +109,13 @@ module.exports.login = async (req, res) => {
                 message: 'Login successful',
                 data: {
                     accessToken: token,
-                    user: result
+                    user: {
+                        userId: result.userId,
+                        firstName: result.firstName,
+                        lastName: result.lastName,
+                        email: result.email,
+                        phone: result.phone
+                    }
                 }
             });
         } else {
