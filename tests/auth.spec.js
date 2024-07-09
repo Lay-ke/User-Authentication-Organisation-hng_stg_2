@@ -8,7 +8,7 @@ const { createToken } = require('../controllers/authController'); // Adjust the 
 require('dotenv').config();
 
 const jwtSecret = process.env.JWTSECRET; // Ensure you are using the correct secret
-const maxAge = process.env.MAXAGE; // Ensure you are using the correct max age for the token
+const maxAge = 1 * 24 * 60 * 60; // Ensure you are using the correct max age for the token
 
 describe('createToken function', () => {
   it('should generate a token that expires at the correct time', () => {
