@@ -40,11 +40,7 @@ const User = sequelize.define('User', {
     allowNull: false,
     validate: {
       notNull: { msg: 'Password is required' },
-      notEmpty: { msg: 'Password must not be empty' },
-      len: {
-        args: [6, 100],
-        msg: 'Password must be at least 6 characters long'
-      }
+      notEmpty: { msg: 'Password must not be empty' }
     }
   },
   phone: {
@@ -52,7 +48,7 @@ const User = sequelize.define('User', {
     allowNull: true
   }
 }, {
-  tableName: 'users', // Specify the table name if different from model name
+  tableName: 'users',
   hooks: {
     beforeCreate: async (user) => {
       if (user.password) {
@@ -92,12 +88,12 @@ const Organisation = sequelize.define('Organisation', {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: 'users', // Note the lowercase 'users' here
+      model: 'users', 
       key: 'userId'
     }
   }
 }, {
-  tableName: 'organisations' // Specify the table name if different from model name
+  tableName: 'organisations' 
 });
 
 // Define the many-to-many relationship

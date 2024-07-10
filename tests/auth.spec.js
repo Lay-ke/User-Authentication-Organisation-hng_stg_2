@@ -128,7 +128,8 @@ describe('POST /auth/register', () => {
 describe('POST /auth/login', () => {
 
     beforeAll(async () => {
-        const passwordHash = await bcrypt.hash('password123', 10);
+        const salt = bcrypt.genSalt();
+        const passwordHash = await bcrypt.hash('password123', salt);
         await User.create({
             firstName: 'Jane',
             lastName: 'Doe',
