@@ -40,11 +40,7 @@ const User = sequelize.define('User', {
     allowNull: false,
     validate: {
       notNull: { msg: 'Password is required' },
-      notEmpty: { msg: 'Password must not be empty' },
-      len: {
-        args: [6, 100],
-        msg: 'Password must be at least 6 characters long'
-      }
+      notEmpty: { msg: 'Password must not be empty' }
     }
   },
   phone: {
