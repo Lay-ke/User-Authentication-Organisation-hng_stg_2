@@ -3,7 +3,6 @@ require('dotenv').config();
 const authRoute = require('./routes/authroutes');
 const userRoute = require('./routes/userRoutes');
 const cookieParser = require('cookie-parser');
-const errorHandler = require('./middleware/errorHandler');
 const {sequelize} = require('./config/dbConnection')
 
 const app = express();
@@ -17,7 +16,6 @@ app.use(cookieParser());
 
 app.use(authRoute);
 app.use(userRoute);
-app.use(errorHandler);
 
 
 sequelize.authenticate()
