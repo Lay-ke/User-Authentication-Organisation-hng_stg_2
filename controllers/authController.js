@@ -59,9 +59,11 @@ module.exports.register = async (req, res) => {
           return res.status(422).json({ errors });
         }
         
-        res.status(500).json({
-            status: 'Internal Server Error',
-            message: 'Failed to register user'
+        res.status(400).json({
+            "status": "Bad request",
+            "message": "Registration unsuccessful",
+            "statusCode": 400
+
         });
     } // finally {
     //     await sequelize.close(); // Close the connection
