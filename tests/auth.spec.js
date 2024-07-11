@@ -47,32 +47,42 @@ beforeAll(async () => {
 });
 
 describe('POST /auth/register', () => {
-  beforeEach(async () => {
-      // Clear database or ensure a clean state before each test
-      await User.destroy({ where: {} });
-  });
+    beforeEach(async () => {
+        // Clear database or ensure a clean state before each test
+        await User.destroy({ where: {} });
+        await Organisation.destroy({ where: {} });
+    });
 
-  it('should register user successfully with default organisation', async () => {
-      const userData = {
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'john.doe@example.com',
-          password: 'password123'
-      };
+    it('should register user successfully with default organisation', async () => {
+        const userData = {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john.doe@example.com',
+            password: 'password123',
+            phone: '0207821919'
+        };
 
-      const response = await request(app)
-          .post('/auth/register')
-          .send(userData)
-          .expect(201);
+        const response = await request(app)
+            .post('/auth/register')
+            .send(userData)
+            .expect(201);
 
-      expect(response.body.status).toBe('Success');
-      expect(response.body.message).toBe('User registered successfully');
-      expect(response.body.data.user.firstName).toBe(userData.firstName);
-      expect(response.body.data.user.lastName).toBe(userData.lastName);
-      expect(response.body.data.user.email).toBe(userData.email);
-      expect(response.body.data.user.organisationName).toBe(`${userData.firstName}'s Organisation`);
-      expect(response.body.data.accessToken).toBeDefined();
-  });
+        expect(response.body.status).toBe('Success');
+        expect(response.body.message).toBe('Registration successful');
+        expect(response.body.data.user.firstName).toBe(userData.firstName);
+        expect(response.body.data.user.lastName).toBe(userData.lastName);
+        expect(response.body.data.user.email).toBe(userData.email);
+        expect(response.body.data.user.phone).toBe(userData.phone);
+        expect(response.body.data.user.organisationName).toBe(`${userData.firstName}'s Organisation`);
+        expect(response.body.data.accessToken).toBeDefined();
+
+        // Additional verification
+        const user = await User.findOne({ where: { email: userData.email } });
+        const organisation = await Organisation.findOne({ where: { userId: user.userId } });
+
+        expect(organisation).not.toBeNull();
+        expect(organisation.name).toBe("John's Organisation");
+    });
 
   it('should fail if required fields are missing', async () => {
       const userData = {
