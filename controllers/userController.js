@@ -119,7 +119,7 @@ module.exports.createUserOrganisations = async (req, res) => {
         res.status(201)
         .json({
             status: 'success',
-            message: 'Organisation crerated successfully',
+            message: 'Organisation created successfully',
             data: {
                     orgId: newOrg.orgId,
                     name: newOrg.name,
@@ -128,7 +128,7 @@ module.exports.createUserOrganisations = async (req, res) => {
         });
     } catch (error) {
         res.status(400).json({
-            status: 'Bad request',
+            status: 'Bad Request',
             message: 'Client error',
             statusCode: 400
           });

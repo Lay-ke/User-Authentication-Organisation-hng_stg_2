@@ -103,7 +103,7 @@ Organisation.belongsToMany(User, { through: 'UserOrganisations', foreignKey: 'or
 // Sync the model with the database
 (async () => {
   try {
-    await sequelize.sync(); // This will drop the tables if they already exist
+    await sequelize.sync({force: true}); // This will drop the tables if they already exist
     console.log('Database & tables created!');
   } catch (error) {
     console.error('Unable to create the tables:', error);
