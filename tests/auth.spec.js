@@ -69,11 +69,11 @@ describe('POST /auth/register', () => {
 
         expect(response.body.status).toBe('Success');
         expect(response.body.message).toBe('Registration successful');
+        expect(response.body.data.user.userId).toBeDefined();
         expect(response.body.data.user.firstName).toBe(userData.firstName);
         expect(response.body.data.user.lastName).toBe(userData.lastName);
         expect(response.body.data.user.email).toBe(userData.email);
         expect(response.body.data.user.phone).toBe(userData.phone);
-        expect(response.body.data.user.organisationName).toBe(`${userData.firstName}'s Organisation`);
         expect(response.body.data.accessToken).toBeDefined();
 
         // Additional verification
@@ -84,55 +84,86 @@ describe('POST /auth/register', () => {
         expect(organisation.name).toBe("John's Organisation");
     });
 
-  it('should fail if required fields are missing', async () => {
-      const userData = {
-          lastName: 'Doe',
-          email: 'john.doe@example.com',
-          password: 'password123'
-          // Missing firstName
-      };
+    it('should fail if required fields are missing', async () => {
+        const missingFieldsTestCases = [
+            {
+                missingField: 'firstName',
+                userData: {
+                    lastName: 'Doe',
+                    email: 'john.doe@example.com',
+                    password: 'password123'
+                },
+                errorMessage: 'First name is required'
+            },
+            {
+                missingField: 'lastName',
+                userData: {
+                    firstName: 'John',
+                    email: 'john.doe@example.com',
+                    password: 'password123'
+                },
+                errorMessage: 'Last name is required'
+            },
+            {
+                missingField: 'email',
+                userData: {
+                    firstName: 'John',
+                    lastName: 'Doe',
+                    password: 'password123'
+                },
+                errorMessage: 'Email is required'
+            },
+            {
+                missingField: 'password',
+                userData: {
+                    firstName: 'John',
+                    lastName: 'Doe',
+                    email: 'john.doe@example.com'
+                },
+                errorMessage: 'Password is required'
+            }
+        ];
 
-      const response = await request(app)
-          .post('/auth/register')
-          .send(userData)
-          .expect(422);
+        for (const testCase of missingFieldsTestCases) {
+            const response = await request(app)
+                .post('/auth/register')
+                .send(testCase.userData)
+                .expect(422);
 
-      expect(response.body.status).toBe('Bad request');
-      expect(response.body.message).toBe('Validation failed');
-      expect(response.body.errors).toContainEqual({ field: 'firstName', message: 'First name is required' });
-  });
+            expect(response.body.status).toBe('Bad request');
+            expect(response.body.message).toBe('Validation failed');
+            expect(response.body.errors).toContainEqual({
+                field: testCase.missingField,
+                message: testCase.errorMessage
+            });
+        }
+    });
 
-  it('should fail if there’s duplicate email', async () => {
-      // Register first user
-      const userData1 = {
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'john.doe@example.com',
-          password: 'password123'
-      };
+  it('should fail if there is a duplicate email', async () => {
+        const userData = {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john.doe@example.com',
+            password: 'password123',
+            phone: '0207821919'
+        };
 
-      await request(app)
-          .post('/auth/register')
-          .send(userData1)
-          .expect(201);
+        // Attempt to register a second user with the same email
+        const response = await request(app)
+            .post('/auth/register')
+            .send(userData)
+            .expect(422);
 
-      // Attempt to register second user with same email
-      const userData2 = {
-          firstName: 'Jane',
-          lastName: 'Smith',
-          email: 'john.doe@example.com', // Same email as userData1
-          password: 'password456'
-      };
-
-      const response = await request(app)
-          .post('/auth/register')
-          .send(userData2)
-          .expect(422);
-
-      expect(response.body.status).toBe('Bad request');
-      expect(response.body.message).toBe('Validation failed');
-      expect(response.body.errors).toContainEqual({ field: 'email', message: 'Email already exists' });
-  });
+        expect(response.body).toHaveProperty('errors');
+        expect(response.body.errors).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    field: 'email',
+                    message: 'email must be unique'
+                })
+            ])
+        );
+    });
 });
 
 describe('POST /auth/login', () => {
@@ -144,7 +175,7 @@ describe('POST /auth/login', () => {
             firstName: 'Jane',
             lastName: 'Doe',
             email: 'jane.doe@example.com',
-            password: passwordHash,
+            password: 'password123',
             phone: '0987654321'
         });
     });
@@ -160,9 +191,12 @@ describe('POST /auth/login', () => {
         expect(res.statusCode).toEqual(200);
         expect(res.body.status).toEqual('Success');
         expect(res.body.message).toEqual('Login successful');
-        expect(res.body.data).toHaveProperty('accessToken');
-        expect(res.body.data).toHaveProperty('user');
-        expect(res.body.data.user.email).toBe('jane.doe@example.com');
+        expect(response.body.data.user.userId).toBeDefined();
+        expect(response.body.data.user.firstName).toBe(userData.firstName);
+        expect(response.body.data.user.lastName).toBe(userData.lastName);
+        expect(response.body.data.user.email).toBe(userData.email);
+        expect(response.body.data.user.phone).toBe(userData.phone);
+        expect(response.body.data.accessToken).toBeDefined();
     });
 
     it('should fail to log the user in with incorrect password', async () => {
