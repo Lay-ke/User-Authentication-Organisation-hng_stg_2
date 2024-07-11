@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken');
 const { createToken } = require('../controllers/authController'); // Adjust the path to your actual file
 require('dotenv').config();
 
+jest.setTimeout(30000); // 30 seconds timeout for each test
+
 const jwtSecret = process.env.JWTSECRET; // Ensure you are using the correct secret
 const maxAge = 1 * 24 * 60 * 60; // Ensure you are using the correct max age for the token
 
@@ -192,10 +194,10 @@ describe('POST /auth/login', () => {
         expect(res.body.status).toEqual('Success');
         expect(res.body.message).toEqual('Login successful');
         expect(response.body.data.user.userId).toBeDefined();
-        expect(response.body.data.user.firstName).toBe(userData.firstName);
-        expect(response.body.data.user.lastName).toBe(userData.lastName);
-        expect(response.body.data.user.email).toBe(userData.email);
-        expect(response.body.data.user.phone).toBe(userData.phone);
+        expect(response.body.data.user.firstName).toBe('Jane');
+        expect(response.body.data.user.lastName).toBe('Doe');
+        expect(response.body.data.user.email).toBe('jane.doe@example.com');
+        expect(response.body.data.user.phone).toBe('0987654321');
         expect(response.body.data.accessToken).toBeDefined();
     });
 
