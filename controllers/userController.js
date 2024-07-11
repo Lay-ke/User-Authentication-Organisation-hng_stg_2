@@ -22,7 +22,7 @@ module.exports.getUser = async (req, res) => {
         const result = user;
         res.status(200)
         .json({
-            status: 'Success',
+            status: 'success',
             message: 'User found',
             data: {
                 userId: result.userId,
@@ -56,7 +56,7 @@ module.exports.getUserOrganisations = async (req, res) => {
         const orgs = organisations;
         res.status(200)
         .json({
-            status: 'Success',
+            status: 'success',
             message: 'User Organisations',
             data: {
                 organisations: orgs
@@ -90,7 +90,7 @@ module.exports.getUserOrganisation = async (req, res) => {
         const org = organisation;
         res.status(200)
         .json({
-            status: 'Success',
+            status: 'success',
             message: 'User Organisation',
             data: {
                     orgId: org.orgId,
@@ -118,7 +118,7 @@ module.exports.createUserOrganisations = async (req, res) => {
 
         res.status(201)
         .json({
-            status: 'Success',
+            status: 'success',
             message: 'Organisation crerated successfully',
             data: {
                     orgId: newOrg.orgId,
@@ -165,7 +165,7 @@ module.exports.addUser2Organisation = async (req, res) => {
         await organisation.addUser(user); 
         res.status(200)
         .json({
-                status: 'Success',
+                status: 'success',
                 message: 'User added to organisation successfully'
         });
         

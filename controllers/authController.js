@@ -29,7 +29,7 @@ module.exports.register = async (req, res) => {
         console.log('newUser: ', result);
         res.status(201)
         .json({
-            status: 'Success',
+            status: 'success',
             message: 'Registration successful',
             data: {
                 accessToken: token,
@@ -107,7 +107,7 @@ module.exports.login = async (req, res) => {
             res.cookie('jwt', token, {httpOnly: true, maxAge: maxAge * 1000 });
             res.status(200)
             .json({
-                status: 'Success',
+                status: 'success',
                 message: 'Login successful',
                 data: {
                     accessToken: token,
